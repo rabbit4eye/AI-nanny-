@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>คู่มือการอาบน้ำเด็กแรกเกิด (ฉบับโรงพยาบาล)</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&family=Sarabun:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <!-- Markdown Parser -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <style>
+        body { font-family: 'Sarabun', sans-serif; background-color: #f0fdfa; /* Teal-50 (Mint) */ color: #334155; }
+        h1, h2, h3, h4 { font-family: 'Kanit', sans-serif; }
+        .chart-container { position: relative; width: 100%; max-width: 600px; margin: 0 auto; height: 350px; max-height: 400px; }
+        @media (max-width: 640px) { .chart-container { height: 300px; } }
+        .card-shadow { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03); border: 1px solid #e2e8f0; }
+        @keyframes pulse-ring { 0% { box-shadow: 0 0 0 0 rgba(20, 184, 166, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(20, 184, 166, 0); } 100% { box-shadow: 0 0 0 0 rgba(20, 184, 166, 0); } }
+        .ai-loading { animation: pulse-ring 2s infinite; }
+        
+        /* Modal Styles */
+        .modal { transition: opacity 0.25s ease; }
+        body.modal-active { overflow-x: hidden; overflow-y: visible !important; }
+
+        /* Background Animals (CSS Only - No Images) */
+        .bg-animals {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden; pointer-events: none;
+        }
+        .animal-doodle {
+            position: absolute; opacity: 0.03; font-size: 15rem; filter: grayscale(100%); transform: rotate(-10deg);
+        }
+    </style>
+</head>
+<body class="bg-teal-50 text-slate-700 antialiased relative">
+
+    <!-- Background Animals Layer -->
+    <div class="bg-animals">
+        <div class="animal-doodle top-10 left-0">🐘</div>
+        <div class="animal-doodle bottom-0 right-10 transform rotate-12">🦒</div>
+        <div class="animal-doodle top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rotate-6 text-20xl">🐰</div>
+    </div>
+
+    <!-- Header Section (Hospital Theme: Teal/Mint) -->
+    <header class="bg-white border-b-4 border-teal-400 py-8 px-4 shadow-sm relative">
+        <div class="max-w-6xl mx-auto text-center">
+            <div class="inline-block bg-teal-100 text-teal-700 px-3 py-1 rounded-full text-xs font-bold mb-3 tracking-wider">NEWBORN CARE UNIT</div>
+            <h1 class="text-3xl md:text-4xl font-bold text-teal-800 mb-2">คู่มือการอาบน้ำเด็กแรกเกิด</h1>
+            <p class="text-slate-500 font-light">ฉบับโรงพยาบาล: ถูกหลักอนามัย ปลอดภัย อบอุ่น</p>
+            
+            <div class="mt-6 flex justify-center space-x-4 text-sm text-slate-500 font-medium">
+                <div class="flex items-center"><span class="w-2 h-2 bg-teal-400 rounded-full mr-2"></span>Safety First</div>
+                <div class="flex items-center"><span class="w-2 h-2 bg-teal-400 rounded-full mr-2"></span>Hygiene</div>
+                <div class="flex items-center"><span class="w-2 h-2 bg-teal-400 rounded-full mr-2"></span>Love & Care</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Grid -->
+    <main class="max-w-7xl mx-auto py-12 px-4 space-y-12">
+        
+        <!-- Section 1: The Checklist Data -->
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+            <div class="bg-white rounded-xl p-6 card-shadow">
+                <h3 class="text-xl font-bold text-teal-800 mb-4 flex items-center">
+                    <span class="bg-teal-100 p-2 rounded-lg mr-3">🛒</span>
+                    รายการอุปกรณ์ที่จำเป็น
+                </h3>
+                <div class="chart-container"><canvas id="kitChart"></canvas></div>
+            </div>
+            <div class="space-y-4">
+                <div class="bg-white p-6 rounded-xl card-shadow border-l-4 border-teal-500">
+                    <h4 class="text-lg font-bold text-teal-700 mb-2">🛁 Zone 1: อุปกรณ์อาบน้ำ</h4>
+                    <ul class="space-y-2 text-slate-600 text-sm">
+                        <li class="flex items-center"><span class="text-teal-400 mr-2">✓</span> อ่างอาบน้ำเด็ก (ทรงโค้งรับตัว)</li>
+                        <li class="flex items-center"><span class="text-teal-400 mr-2">✓</span> สบู่เหลว pH 5.5 (Head-to-Toe)</li>
+                        <li class="flex items-center"><span class="text-teal-400 mr-2">✓</span> สำลีก้อนผ่านการฆ่าเชื้อ</li>
+                        <li class="flex items-center"><span class="text-teal-400 mr-2">✓</span> น้ำเกลือ (Normal Saline)</li>
+                        <li class="flex items-center"><span class="text-teal-400 mr-2">✓</span> แอลกอฮอล์ 70% (สำหรับสะดือ)</li>
+                    </ul>
+                </div>
+                <div class="bg-white p-6 rounded-xl card-shadow border-l-4 border-blue-400">
+                    <h4 class="text-lg font-bold text-blue-700 mb-2">🧴 Zone 2: หลังอาบน้ำ</h4>
+                    <ul class="space-y-2 text-slate-600 text-sm">
+                        <li class="flex items-center"><span class="text-blue-400 mr-2">✓</span> ผ้าเช็ดตัวนุ่มพิเศษ</li>
+                        <li class="flex items-center"><span class="text-blue-400 mr-2">✓</span> ผ้าอ้อมไซส์ NB</li>
+                        <li class="flex items-center"><span class="text-blue-400 mr-2">✓</span> แปรงขนอ่อน (Soft Brush)</li>
+                        <li class="flex items-center"><span class="text-blue-400 mr-2">✓</span> ชุดเสื้อผ้าที่ระบายอากาศดี</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Process Timeline -->
+        <section>
+             <div class="flex items-center justify-center mb-8">
+                 <div class="h-px bg-teal-200 w-16"></div>
+                 <h2 class="mx-4 text-2xl font-bold text-teal-800">Standard Procedure (3 ขั้นตอนมาตรฐาน)</h2>
+                 <div class="h-px bg-teal-200 w-16"></div>
+             </div>
+             
+             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                 <!-- Step 1 -->
+                 <div class="bg-white rounded-xl p-6 card-shadow relative overflow-hidden">
+                     <div class="absolute top-0 right-0 p-4 opacity-10 text-6xl">🌡️</div>
+                     <h3 class="text-lg font-bold text-slate-700 mb-2">1. Prepare & Swaddle</h3>
+                     <p class="text-xs text-slate-400 uppercase font-semibold mb-3 tracking-wider">เตรียมพร้อม</p>
+                     <p class="text-sm text-slate-600 leading-relaxed">ผสมน้ำอุ่น (เช็คด้วยข้อศอก) วางของให้พร้อม ถอดชุดแล้ว <strong>"ห่อตัวทันที"</strong> เพื่อรักษาอุณหภูมิ</p>
+                 </div>
+                 <!-- Step 2 -->
+                 <div class="bg-white rounded-xl p-6 card-shadow relative overflow-hidden border-b-4 border-teal-400">
+                     <div class="absolute top-0 right-0 p-4 opacity-10 text-6xl">💆</div>
+                     <h3 class="text-lg font-bold text-teal-700 mb-2">2. Clean Head (Dry)</h3>
+                     <p class="text-xs text-teal-400 uppercase font-semibold mb-3 tracking-wider">สระผม (ตัวแห้ง)</p>
+                     <p class="text-sm text-slate-600 leading-relaxed">อุ้มเข้าเอว เช็ดหน้าด้วยน้ำต้มสุก สระผมแล้ว <strong>"เช็ดแห้งทันที"</strong> ก่อนถอดผ้าห่อตัว</p>
+                 </div>
+                 <!-- Step 3 -->
+                 <div class="bg-white rounded-xl p-6 card-shadow relative overflow-hidden">
+                     <div class="absolute top-0 right-0 p-4 opacity-10 text-6xl">🛁</div>
+                     <h3 class="text-lg font-bold text-slate-700 mb-2">3. Body Wash</h3>
+                     <p class="text-xs text-slate-400 uppercase font-semibold mb-3 tracking-wider">ลงอ่างอาบน้ำ</p>
+                     <p class="text-sm text-slate-600 leading-relaxed">ค่อยๆ หย่อนขา ล้างซอกคอ รักแร้ ขาหนีบ พลิกตัวถูหลังอย่างระมัดระวัง</p>
+                 </div>
+             </div>
+        </section>
+
+        <!-- Section 3: Complexity Radar -->
+        <section class="grid grid-cols-1 md:grid-cols-12 gap-8 bg-white rounded-2xl p-8 card-shadow border border-teal-100">
+            <div class="md:col-span-5 flex flex-col justify-center">
+                <h2 class="text-2xl font-bold text-slate-700 mb-4">Critical Care Points</h2>
+                <p class="text-slate-500 mb-6 text-sm">กราฟแสดงระดับความระมัดระวังในการดูแลจุดต่างๆ ตามคำแนะนำแพทย์</p>
+                 <div class="bg-red-50 p-4 rounded-lg border-l-4 border-red-400">
+                    <h5 class="text-red-700 font-bold text-sm mb-2">⚠️ จุดที่ต้องระวังสูงสุด:</h5>
+                    <ul class="text-sm space-y-2 text-red-600">
+                        <li><strong>สะดือ:</strong> ต้องแห้งสนิท ห้ามชื้นเด็ดขาด (เสี่ยงติดเชื้อ)</li>
+                        <li><strong>ดวงตา:</strong> เช็ดทีเดียวทิ้ง ห้ามเช็ดวน</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="md:col-span-7 flex justify-center items-center">
+                <div class="chart-container"><canvas id="complexityChart"></canvas></div>
+            </div>
+        </section>
+
+        <!-- New Section: Gemini AI Assistant -->
+        <section id="ai-assistant" class="bg-gradient-to-br from-teal-50 to-white rounded-2xl p-8 border border-teal-200 shadow-md relative overflow-hidden">
+             
+            <!-- Settings Button -->
+            <button onclick="toggleModal()" class="absolute top-6 right-6 z-20 bg-white hover:bg-teal-50 p-2 rounded-full transition duration-200 text-teal-500 border border-teal-200 shadow-sm" title="ตั้งค่า API Key">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+            </button>
+
+            <div class="relative z-10 max-w-4xl mx-auto">
+                <div class="text-center mb-6">
+                    <div class="inline-flex items-center gap-2 bg-teal-100 text-teal-800 px-3 py-1 rounded-full text-xs font-bold mb-3">
+                        <span>🤖</span> Powered by Gemini AI
+                    </div>
+                    <h2 class="text-2xl font-bold text-teal-900">ปรึกษาพี่เลี้ยง AI อัจฉริยะ</h2>
+                    <p class="text-slate-500 text-sm mt-1">ผู้ช่วยส่วนตัวตอบคำถามสุขภาพและการดูแลทารก (Hybrid Wisdom)</p>
+                </div>
+                
+                <div class="bg-white rounded-xl border border-teal-100 shadow-sm p-6">
+                    <div class="space-y-4">
+                        <textarea id="user-input" rows="2" class="w-full p-4 border border-slate-200 rounded-lg focus:ring-2 focus:ring-teal-400 focus:border-transparent resize-none bg-slate-50 text-sm" placeholder="เช่น น้องมีผื่นขึ้นหน้าใช้อะไรทาดี? หรือ สะดือมีกลิ่นเหม็นปกติไหม?"></textarea>
+                        
+                        <div class="flex gap-3">
+                            <button id="ask-btn" onclick="callGemini()" class="flex-1 bg-teal-500 hover:bg-teal-600 text-white font-bold py-2.5 px-6 rounded-lg transition duration-200 flex items-center justify-center gap-2 shadow-sm text-sm">
+                                <span>ส่งคำถาม</span>
+                            </button>
+                             <button onclick="generateEncouragement()" class="bg-rose-400 hover:bg-rose-500 text-white font-bold py-2.5 px-4 rounded-lg shadow-sm text-sm" title="ขอกำลังใจ">❤️</button>
+                        </div>
+                    </div>
+
+                    <!-- Loading & Result -->
+                    <div id="loading-indicator" class="hidden mt-6 text-center text-teal-600 text-sm ai-loading flex justify-center items-center gap-2">
+                        <svg class="animate-spin h-4 w-4 text-teal-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                        กำลังปรึกษาพี่เลี้ยง AI...
+                    </div>
+                    
+                    <div id="ai-response-container" class="hidden mt-6 bg-teal-50/50 border-l-4 border-teal-400 p-5 rounded-r-lg">
+                        <div id="ai-response-text" class="prose prose-teal text-slate-700 text-sm leading-relaxed max-w-none"></div>
+                        
+                        <!-- Disclaimer Added Here -->
+                        <div class="mt-4 pt-3 border-t border-teal-100">
+                            <p class="text-xs text-red-500 font-semibold flex items-start gap-1">
+                                <span class="text-base">⚠️</span> 
+                                ข้อมูลนี้เป็นเพียงคำแนะนำเบื้องต้น ไม่ใช่การวินิจฉัยทางการแพทย์ หากฉุกเฉินหรืออาการรุนแรง โปรดพบแพทย์ทันที
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-white border-t border-slate-200 text-slate-400 py-6 text-center text-xs">
+        <p>© 2024 คู่มือการอาบน้ำเด็ก & AI Assistant | สร้างด้วย Gemini & GitHub Pages</p>
+    </footer>
+
+    <!-- API KEY MODAL -->
+    <div id="apiKeyModal" class="modal opacity-0 pointer-events-none fixed w-full h-full top-0 left-0 flex items-center justify-center z-50">
+        <div class="modal-overlay absolute w-full h-full bg-slate-900 opacity-40 backdrop-blur-sm" onclick="toggleModal()"></div>
+        <div class="modal-container bg-white w-11/12 md:max-w-md mx-auto rounded-xl shadow-2xl z-50 overflow-y-auto transform transition-all duration-300 scale-95 border-t-4 border-teal-500">
+            <div class="modal-content py-6 text-left px-6">
+                <div class="flex justify-between items-center pb-4 border-b border-slate-100 mb-4">
+                    <p class="text-lg font-bold text-teal-800">🔑 ตั้งค่า API Key</p>
+                    <div class="cursor-pointer z-50 hover:bg-slate-100 rounded-full p-1 transition" onclick="toggleModal()">
+                        <svg class="fill-current text-slate-400 hover:text-slate-600" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 18 18"><path d="M14.53 4.53l-1.06-1.06L9 7.94 4.53 3.47 3.47 4.53 7.94 9l-4.47 4.47 1.06 1.06L9 10.06l4.47 4.47 1.06-1.06L10.06 9z"></path></svg>
+                    </div>
+                </div>
+                <div class="bg-teal-50 rounded-lg p-4 mb-4 border border-teal-100">
+                    <p class="font-bold text-teal-700 mb-2 text-xs uppercase tracking-wide">Instruction:</p>
+                    <ul class="text-xs text-teal-800 space-y-1.5 list-disc pl-4">
+                        <li>ไปที่เว็บ <a href="https://aistudio.google.com/app/apikey" target="_blank" class="text-blue-600 underline font-semibold hover:text-blue-800">Google AI Studio</a></li>
+                        <li>ล็อกอิน Gmail > กด <strong>"Create API key"</strong></li>
+                        <li>เลือก <strong>"Create API key in new project"</strong></li>
+                        <li>นำรหัสที่ได้มาวางในช่องด้านล่าง</li>
+                    </ul>
+                </div>
+                <div class="mb-4">
+                    <input type="password" id="apiKeyInput" class="w-full bg-slate-50 border border-slate-200 rounded-lg py-3 px-3 text-slate-700 text-sm focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-transparent transition" placeholder="วางรหัสที่นี่ (AIza...)" />
+                </div>
+                <div class="flex justify-end pt-2 gap-2">
+                    <button onclick="toggleModal()" class="px-4 py-2 bg-white border border-slate-200 rounded-lg text-slate-500 hover:bg-slate-50 transition text-sm font-medium">ปิด</button>
+                    <button onclick="saveApiKey()" class="px-6 py-2 bg-teal-500 rounded-lg text-white hover:bg-teal-600 transition text-sm font-bold shadow-sm">บันทึกใช้งาน</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script -->
+    <script>
+        // --- Modal Logic ---
+        function toggleModal() {
+            const body = document.querySelector('body');
+            const modal = document.querySelector('#apiKeyModal');
+            const modalContainer = modal.querySelector('.modal-container');
+            modal.classList.toggle('opacity-0'); modal.classList.toggle('pointer-events-none'); body.classList.toggle('modal-active');
+            if (!modal.classList.contains('opacity-0')) {
+                const savedKey = localStorage.getItem('gemini_api_key');
+                if(savedKey) document.getElementById('apiKeyInput').value = savedKey;
+                modalContainer.classList.remove('scale-95'); modalContainer.classList.add('scale-100');
+            } else { modalContainer.classList.remove('scale-100'); modalContainer.classList.add('scale-95'); }
+        }
+        function saveApiKey() {
+            const key = document.getElementById('apiKeyInput').value.trim();
+            if(key) { localStorage.setItem('gemini_api_key', key); alert("บันทึกเรียบร้อย!"); toggleModal(); } 
+            else { alert("กรุณาวาง API Key ก่อนครับ"); }
+        }
+        function getApiKey() {
+            const key = localStorage.getItem('gemini_api_key');
+            if (!key) { toggleModal(); return null; } return key;
+        }
+
+        // --- Charts ---
+        function formatLabel(str, maxwidth) {
+            var sections = []; var words = str.split(" "); var temp = "";
+            words.forEach(function(item, index) {
+                if (temp.length > 0) {
+                    var concat = temp + ' ' + item;
+                    if (concat.length > maxwidth) { sections.push(temp); temp = ""; } 
+                    else { if (index == (words.length - 1)) { sections.push(concat); return; } else { temp = concat; return; } }
+                }
+                if (index == (words.length - 1)) { sections.push(item); return; }
+                if (item.length < maxwidth) { temp = item; } else { sections.push(item); }
+            }); return sections;
+        }
+
+        const kitChart = new Chart(document.getElementById('kitChart').getContext('2d'), {
+            type: 'doughnut',
+            data: {
+                labels: [formatLabel('อุปกรณ์ อาบน้ำ', 16), formatLabel('ของใช้ หลังอาบ', 16), formatLabel('เสื้อผ้า', 16)],
+                datasets: [{ data: [7, 4, 3], backgroundColor: ['#2dd4bf', '#60a5fa', '#f472b6'], borderWidth: 0 }] // Teal, Blue, Pink
+            },
+            options: { responsive: true, maintainAspectRatio: false, cutout: '70%', plugins: { legend: { position: 'bottom', labels: { font: { family: "'Sarabun', sans-serif" } } } } }
+        });
+
+        const complexChart = new Chart(document.getElementById('complexityChart').getContext('2d'), {
+            type: 'radar',
+            data: {
+                labels: ['สะดือ', 'ดวงตา', 'สระผม', 'ถูลำตัว', 'อวัยวะเพศ'],
+                datasets: [{ label: 'ความระวัง', data: [9.5, 8, 6, 5, 7], backgroundColor: 'rgba(20, 184, 166, 0.2)', borderColor: '#14b8a6', pointBackgroundColor: '#14b8a6', fill: true }] // Teal-500
+            },
+            options: { responsive: true, maintainAspectRatio: false, scales: { r: { suggestedMin: 0, suggestedMax: 10, grid: { color: '#e2e8f0' } } }, plugins: { legend: { display: false } } }
+        });
+
+        // --- AI Logic (Updated Temp & Persona) ---
+        async function callGemini() {
+            const apiKey = getApiKey(); if (!apiKey) return;
+            const inputField = document.getElementById('user-input');
+            const question = inputField.value.trim();
+            const responseContainer = document.getElementById('ai-response-container');
+            const responseText = document.getElementById('ai-response-text');
+            const loading = document.getElementById('loading-indicator');
+
+            if (!question) { alert("กรุณาพิมพ์คำถามก่อนนะคะ"); return; }
+
+            loading.classList.remove('hidden'); responseContainer.classList.add('hidden');
+            
+            const systemPrompt = `Role & Persona:
+คุณคือ "พี่เลี้ยงอัจฉริยะ" (AI Nanny) ผู้เชี่ยวชาญด้านการดูแลทารกแรกเกิด (Newborn Specialist) ที่มีความรอบรู้แบบ "Hybrid Wisdom" คือผสมผสานวิทยาศาสตร์การแพทย์สมัยใหม่ เข้ากับภูมิปัญญาแพทย์แผนไทย สายหม่อมราชวงศ์สอาด ทินกร คุณมีบุคลิกที่อบอุ่น ใจเย็น เข้าใจหัวอกพ่อแม่มือใหม่ (Empathic) สื่อสารด้วยภาษาที่เข้าใจง่าย กระชับ และทันสมัย
+
+Core Competencies:
+1. Modern Newborn Care: ตามมาตรฐาน AAP/WHO (การนอน, การกิน, SIDS prevention)
+2. Parental Behavioral Learning: จิตวิทยาเด็กและ EF
+3. Product Intelligence: วิเคราะห์ส่วนผสม (SLS, Paraben, pH 5.5)
+4. Thai Traditional Medicine: ธาตุเจ้าเรือน, สมุนไพรปลอดภัย (ระบุเสมอว่าเป็นแผนไทย ห้ามวินิจฉัยโรค)
+
+Response Format:
+1. คำตอบหลัก
+2. 💡 Fun Fact
+3. ✅ Checklist (ถ้ามี)
+4. 🌿 มุมมองแพทย์แผนไทย (ถ้ามี)
+
+Constraints:
+- ห้ามแนะนำยาปฏิชีวนะ
+- ฉุกเฉินแนะนำพบแพทย์ทันที
+
+คำถามจากผู้ใช้: ${question}`;
+
+            try {
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+                const response = await fetch(url, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        contents: [{ parts: [{ text: systemPrompt }] }],
+                        generationConfig: { temperature: 0.5 } // Set Temp to 0.5 as requested
+                    })
+                });
+
+                if (!response.ok) throw new Error(`API Error: ${response.status}`);
+                const data = await response.json();
+                responseText.innerHTML = marked.parse(data.candidates[0].content.parts[0].text);
+                responseContainer.classList.remove('hidden');
+            } catch (error) { console.error(error); alert("เกิดข้อผิดพลาด: Key ไม่ถูกต้องหรือโควตาเต็ม"); toggleModal(); } 
+            finally { loading.classList.add('hidden'); }
+        }
+
+        async function generateEncouragement() {
+            const apiKey = getApiKey(); if (!apiKey) return;
+            const responseContainer = document.getElementById('ai-response-container');
+            const responseText = document.getElementById('ai-response-text');
+            const loading = document.getElementById('loading-indicator');
+
+            loading.classList.remove('hidden'); responseContainer.classList.add('hidden');
+
+            try {
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+                const response = await fetch(url, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        contents: [{ parts: [{ text: "ขอกำลังใจสั้นๆ ซึ้งๆ หรือตลกน่ารักๆ ให้กับคุณพ่อคุณแม่มือใหม่ 1 ประโยค พร้อมอีโมจิ ในบทบาทพี่เลี้ยง AI ใจดี" }] }],
+                        generationConfig: { temperature: 0.7 }
+                    })
+                });
+                const data = await response.json();
+                responseText.innerHTML = marked.parse(data.candidates[0].content.parts[0].text);
+                responseContainer.classList.remove('hidden');
+            } catch (error) { console.error(error); alert("เชื่อมต่อไม่ได้"); } 
+            finally { loading.classList.add('hidden'); }
+        }
+    </script>
+</body>
+</html>
