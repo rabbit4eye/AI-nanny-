@@ -1,27 +1,33 @@
-# 👶 Newborn Bathing Guide & AI Nurse Assistant
+# 👶 คู่มืออาบน้ำทารกแรกเกิด & AI ผู้ช่วยพยาบาล (Newborn Bathing Guide & AI Nurse Assistant)
 
-Interactive web application for new parents, designed to simplify the newborn bathing process with data visualization and AI assistance.
+เว็บแอปพลิเคชันแบบ Interactive สำหรับคุณพ่อคุณแม่มือใหม่ ออกแบบมาเพื่อช่วยให้ขั้นตอนการอาบน้ำทารกเป็นเรื่องง่ายขึ้น ผ่านการนำเสนอข้อมูลด้วยภาพ (Data Visualization) และมี AI คอยให้คำแนะนำ
 
-## 🌟 Key Features
+## 🌟 ฟีเจอร์เด่น (Key Features)
 
-* **Smart Checklist:** Visual breakdown of essential items (Bathing vs. Grooming) using **Chart.js**.
-* **Step-by-Step Guide:** Clear protocols for bathing, from preparation to swaddling.
-* **Complexity Analysis:** Radar chart highlighting high-care areas (Umbilical cord, Eyes).
-* **🤖 AI Nurse Assistant:** Integrated **Google Gemini API** to answer parenting questions and provide emotional support in Thai.
-* **Responsive Design:** Mobile-friendly interface built with **Tailwind CSS**.
+* **Smart Checklist:** เช็คลิสต์อัจฉริยะที่แสดงรายการของใช้จำเป็น โดยแยกหมวดหมู่ชัดเจน (อุปกรณ์อาบน้ำ vs การดูแลร่างกายหลังอาบ) แสดงผลด้วย **Chart.js**
+* **Step-by-Step Guide:** คู่มือแนะนำขั้นตอนการอาบน้ำที่เข้าใจง่าย ตั้งแต่การเตรียมตัวไปจนถึงการห่อตัว
+* **Complexity Analysis:** กราฟ Radar Chart วิเคราะห์จุดเปราะบางที่ต้องดูแลเป็นพิเศษ (เช่น สะดือ, ดวงตา) เพื่อให้คุณพ่อคุณแม่ระมัดระวังได้ถูกจุด
+* **🤖 AI Nurse Assistant:** เชื่อมต่อ **Google Gemini API** เพื่อตอบคำถามเรื่องการเลี้ยงลูก ให้ความรู้ และเป็นเพื่อนคู่คิดให้กำลังใจ (รองรับภาษาไทย)
+* **Responsive Design:** รองรับการใช้งานบนมือถือ (Mobile-friendly) ดีไซน์สวยงามและทันสมัยด้วย **Tailwind CSS**
 
-## 🛠️ Tech Stack
+## 🛠️ เทคโนโลยีที่ใช้ (Tech Stack)
 
 * HTML5 / JavaScript (ES6)
-* Tailwind CSS (Styling)
-* Chart.js (Data Visualization)
-* Google Gemini API (Generative AI)
+* Tailwind CSS (สำหรับการตกแต่งหน้าเว็บ)
+* Chart.js (สำหรับการแสดงผลข้อมูลเป็นกราฟ)
+* Google Gemini API (ระบบ Generative AI)
 
-## 🚀 How to Use
+## 🚀 วิธีเริ่มต้นใช้งาน (How to Use)
 
-1.  Clone this repository.
-2.  Add your Gemini API Key in `index.html`.
-3.  Open `index.html` in your browser or deploy to **GitHub Pages**.
+1.  Clone repository นี้ลงในเครื่องของคุณ
+2.  นำ **Gemini API Key** ของคุณไปใส่ในไฟล์ `index.html` (ตรงส่วนตั้งค่า Config)
+3.  เปิดไฟล์ `index.html` ผ่านเว็บเบราว์เซอร์ หรืออัปโหลดขึ้น **GitHub Pages** เพื่อใช้งานออนไลน์
 
 ---
-*Based on expert nursing guidelines & user research transcripts.*
+*โปรเจกต์นี้พัฒนาโดยอ้างอิงจากหลักการพยาบาลวิชาชีพและการวิจัยข้อมูลจากผู้ใช้งานจริง*
+
+##Screen Shot
+For being guideline 
+<img width="1097" height="732" alt="Screenshot 2569-01-20 at 14 04 51" src="https://github.com/user-attachments/assets/81a32f2c-1536-481f-83bd-6f2970f9e0d0" />
+<img width="1098" height="724" alt="Screenshot 2569-01-20 at 14 05 22" src="https://github.com/user-attachments/assets/7fe28347-7efa-4cd1-9713-2ee2786ed9fe" />
+<img width="1096" height="687" alt="Screenshot 2569-01-20 at 14 05 43" src="https://github.com/user-attachments/assets/2801491d-55ab-4662-8c42-e0ad5a6964bc" />
